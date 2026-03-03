@@ -1,0 +1,48 @@
+# --- Julia Files ---
+# Ignore compiled Julia files and caches
+*.jl.cov
+*.jl.mem
+*.jl.unused
+__pycache__/
+.Conda/
+.julia/
+*.vtu
+*.key
+*.nb
+
+# --- Large Data & Simulation Outputs ---
+# These are likely your CFD results (Adjust extensions if needed)
+*.jld2
+*.h5
+*.hdf5
+*.dat
+*.csv
+*.npy
+*.mat
+# Ignore any specific results/output folders
+results/
+output/
+data/
+
+# --- Figures and Media ---
+# This prevents the "slow add" by ignoring the images
+*.png
+*.pdf
+*.jpg
+*.jpeg
+*.svg
+*.gif
+*.eps
+
+# --- OS/Editor Junk ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- WHAT TO KEEP (Exceptions) ---
+# We want to make sure these are NEVER ignored
+!.gitignore
+!Project.toml
+!Manifest.toml
+!README.md
