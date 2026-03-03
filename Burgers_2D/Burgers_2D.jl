@@ -86,50 +86,40 @@ end
 
 N = 3
 K1D = 30
-
 flux_type = :EC
-#flux_type = :LxW
+DG_type = :modal  # Set to modal as requested
 
-# Artificial Viscosity Type
-AV_type = :LDG
-#AV_type = :BR1
+# Define the cases we want to run
+av_cases = [:LDG, :BR1]
 
-#DG Formulation
-DG_type = :nodal
-#DG_type = :modal
+for current_AV in av_cases
+    let rd, md, u, params, tspan, ode, sol, save_path 
+        println("\n" * "="^40)
+        println("Running Case: DG_type = $DG_type | AV_type = $current_AV")
+        println("="^40)
 
-if DG_type == :nodal
-    rd = RefElemData(Tri(), SBP(), N)
+        rd = RefElemData(Tri(), N) 
+        md = MeshData(uniform_mesh(Tri(), K1D), rd; is_periodic = true)
+
+        u = rd.Pq * exp.(-25*(md.xq.^2 + md.yq.^2)) 
+
+        params = (; rd, md, AV_type = current_AV, DG_type, 
+                   t = Float64[], max_epsilon = Float64[], dSdt = Float64[])
+        
+        tspan = (0.0, 0.77)
+        ode = ODEProblem(rhs!, u, tspan, params)
+
+        sol = solve(ode, SSPRK43(); abstol = 1e-6, reltol = 1e-4, 
+                    saveat = LinRange(tspan..., 500),
+                    callback = AliveCallback(alive_interval = 100))
+
+        file_name = "N$(N)_K$(K1D)_$(current_AV)_$(DG_type)_$(flux_type).jld2"
+        save_path = joinpath(@__DIR__, "Data", file_name)
+        
+        mkpath(dirname(save_path))
+        
+        println("Saving results to: $save_path")
+        @save save_path md rd sol
+    end
 end
-
-if DG_type == :modal
-    rd = RefElemData(Tri(), N)
-end
-
-md = MeshData(uniform_mesh(Tri(), K1D), rd; is_periodic = true)
-
-#Initial Condition
-# u = @. exp(-25 * (md.x^2 + md.y^2))
-u = rd.Pq * exp.(-25*(md.xq.^2 + md.yq.^2)) #changed for modal generalization
-
-t = Float64[]
-max_epsilon = Float64[]
-dSdt = Float64[]
-num = Float64[]
-den = Float64[]
-params = (; rd, md, AV_type, DG_type, t, max_epsilon, dSdt, num, den)
-tspan = (0.0,0.77)
-ode = ODEProblem(rhs!, u, tspan, params)
-
-sol = solve(ode, SSPRK43(); abstol = 1e-6, reltol = 1e-4, 
-            saveat = LinRange(tspan..., 500),
-            callback = AliveCallback(alive_interval = 100))
-
-u = sol.u[end]
-display(scatter(vec(rd.Vp * md.x), vec(rd.Vp * md.y), zcolor=vec(rd.Vp * u),
-        title = "$(AV_type)_$(DG_type)_$(flux_type) N=$(N) K=$(K1D) t=$(sol.t[end])",
-        ms = 1, msw=0, leg=false, colorbar = true))
-
-
-@save "Data/N$(N)_K$(K1D)_$(AV_type)_$(DG_type)_$(flux_type).jld2" md rd sol
 
