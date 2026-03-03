@@ -91,8 +91,8 @@ flux_type = :EC
 #flux_type = :LxW
 
 # Artificial Viscosity Type
-#o0AV_type = :LDG
-AV_type = :BR1
+AV_type = :LDG
+#AV_type = :BR1
 
 #DG Formulation
 DG_type = :nodal
