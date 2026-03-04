@@ -66,7 +66,7 @@ function rhs_shock_cap!(du_voa, u_voa, params, t)
     ENm1 = vec(sum(u_modal[1:end-1, :].^2, dims=1))
     S = max.(u_modal[end, :].^2 ./ EN, u_modal[end-1, :].^2 ./ ENm1)
     s = log10.(S);
-    element_sizes = transpose(maximum(md.x, dims=1) .- minimum(x, dims=1))
+    element_sizes = transpose(maximum(md.x, dims=1) .- minimum(md.x, dims=1))
     epsilon_0 = 0.5*element_sizes/rd.N
     s_0 = -(15/2)*log10(rd.N)
     xi = (7/2)*log10(rd.N)
@@ -288,8 +288,8 @@ DG_type = :modal
 gamma = 1.4
 equations = CompressibleEulerEquations1D(gamma)
 
-N = 5
-K1D = 32
+N = 3
+K1D = 100
 if DG_type == :modal
     rd = RefElemData(Line(), N) #modal
 elseif DG_type == :nodal
@@ -299,11 +299,11 @@ end
 (VX,), EToV = uniform_mesh(rd.element_type, K1D)
 
 #Choose the problem
-initial_condition_type = :density_wave
+# initial_condition_type = :density_wave
 # initial_condition_type = :density_wave_convergence
 # initial_condition_type = :sod_shock_tube
 # initial_condition_type = :stationary_contact_wave
-# initial_condition_type = :shu_osher
+initial_condition_type = :shu_osher
 # initial_condition_type = :Euler_problem_1
 
 if initial_condition_type == :density_wave
@@ -336,9 +336,7 @@ function solve_ode(u, tspan, params, abstol = 1e-6, reltol = 1e-4, number_of_sav
     ode = ODEProblem(rhs!, VectorOfArray(u), tspan, params)
     sol = solve(ode, SSPRK43(); abstol, reltol, 
                 saveat=LinRange(tspan..., number_of_saves), 
-                callback=AliveCallback(alive_interval=100)),
-                #adaptive = false, #stationary contact wave example  
-                #dt = 5e-4) #stationary contact wave example
+                callback=AliveCallback(alive_interval=100))
     return sol
 end
 
@@ -380,7 +378,8 @@ if initial_condition_type == :density_wave_convergence
     end
 
 elseif  initial_condition_type == :density_wave
-    folder = "/Users/samvanfleet/Documents/Rice Artificial Viscosity/Euler_1D copy/Density_Wave_data/"
+    folder = joinpath(@__DIR__, "Density_Wave_data")
+    mkpath(folder)
     AV_type = :LDG
     t = Float64[]
     l2_epsilon = Float64[]
@@ -435,9 +434,6 @@ elseif  initial_condition_type == :density_wave
     common_size = (800, 600)
     margins = (5Plots.mm, 5Plots.mm, 5Plots.mm, 5Plots.mm)   # (left, right, top, bottom)
     
-    folder_name = "Density_Wave_Plots"
-    # This checks if it exists and creates it if it doesn't
-    mkpath(folder_name)
     #Plot the maximum epsilon values
     p = plot(sol.prob.p.t, sol.prob.p.max_epsilon .+ 1e-14, 
         yscale = :log10,
@@ -460,8 +456,11 @@ elseif  initial_condition_type == :density_wave
         label = L"$\max_k{\epsilon_k}$ SC", linewidth = 3)
 
     display(p)
+
+    path_to_plots = joinpath(@__DIR__, "Density_Wave_Plots")
+    mkpath(path_to_plots)
     
-    savefig(p, "Density_Wave_Plots/max_epsilon_$(sol.prob.p.DG_type)_K_$(K1D).png")
+    savefig(p, joinpath("Density_Wave_Plots", "max_epsilon_$(sol.prob.p.DG_type)_K_$(K1D).png"))
 
     #Plot the l2 norm of the epsilon values
 
@@ -485,8 +484,7 @@ elseif  initial_condition_type == :density_wave
         label = label = L"$\||\epsilon\||_{\ell^2}$ SC", linewidth = 3)
 
     display(p)
-    
-    savefig(p, "Density_Wave_Plots/l2_epsilon_$(sol.prob.p.DG_type)_K_$(K1D).png")
+    savefig(p, joinpath("Density_Wave_Plots", "l2_epsilon_$(sol.prob.p.DG_type)_K_$(K1D).png"))
 
     #Plot the L2 error evolution
     q = plot(sol.prob.p.t, sol.prob.p.L2_error,
@@ -527,7 +525,7 @@ elseif  initial_condition_type == :density_wave
     "\$$(round(L2_error_ecav_dg_fem, sigdigits = sig))\$ \\\\"
     println(latex_row)
 
-    savefig(q, "Density_Wave_Plots/error_$(sol.prob.p.DG_type)_K_$(K1D).png")
+    savefig(q, joinpath("Density_Wave_Plots", "error_$(sol.prob.p.DG_type)_K_$(K1D).png"))
 
     #Plot densities at the final time
     rho_sc = rd.Vp * getindex.(parent(sol_sc.u[end]), 1)
@@ -595,7 +593,7 @@ elseif  initial_condition_type == :density_wave
         color = :green)
     display(p)
 
-    savefig(p, "Density_Wave_Plots/density_$(sol.prob.p.DG_type)_K_$(K1D).png")
+    savefig(p, joinpath("Density_Wave_Plots", "density_$(sol.prob.p.DG_type)_K_$(K1D).png"))
 
 
 elseif initial_condition_type == :sod_shock_tube
@@ -637,7 +635,9 @@ elseif initial_condition_type == :stationary_contact_wave
         initial_condition_type, AV_type, t, max_epsilon, DG_type,
         du_visc_norm, sigma_norm, du_Euler_norm, du_Euler_AV_norm, L2_error)
 
-    folder = "/Users/samvanfleet/Documents/Rice Artificial Viscosity/Euler_1D copy/Contact_wave_data/"
+    folder = joinpath(@__DIR__, "Density_Wave_data")
+
+    mkpath(folder)
 
     filename = "N$(N)_K$(K1D)_tspan$(tspan[2]).jld2"
     
@@ -659,7 +659,8 @@ elseif initial_condition_type == :shu_osher
 
     tspan = (0.0, 1.8)
 
-    folder = "/Users/samvanfleet/Documents/Rice Artificial Viscosity/Euler_1D copy/Shu_Osher_data/"
+    folder = joinpath(@__DIR__, "Shu_Osher_data")
+    mkpath(folder)
     AV_type = :LDG
     t = Float64[]
     max_epsilon = Float64[]
@@ -693,7 +694,10 @@ elseif initial_condition_type == :shu_osher
         right_margin = margins[2],
         top_margin = margins[3],
         bottom_margin = margins[4])
-    savefig(p, "Shu_Osher_plots/dvPdv_$(sol_LDG.prob.p.DG_type).pdf")
+
+    path_to_plots = joinpath(@__DIR__, "Shu_Osher_plots")
+    mkpath(path_to_plots)
+    savefig(p, joinpath(path_to_plots, "dvPdv_$(sol_LDG.prob.p.DG_type).pdf"))
     # display(p)
 
     AV_type = :BR1
@@ -748,7 +752,7 @@ elseif initial_condition_type == :shu_osher
     plot!(sigma_norm_evolution_plot, sol_BR1.prob.p.t, sol_BR1.prob.p.sigma_norm,
         label = "$(sol_BR1.prob.p.AV_type) $(sol_BR1.destats.naccept) time steps")
 
-    savefig(sigma_norm_evolution_plot, "Shu_Osher_plots/sigma_norm_evolution_$(DG_type).pdf")
+    savefig(sigma_norm_evolution_plot, joinpath(path_to_plots, "sigma_norm_evolution_$(DG_type).pdf"))
 
     du_visc_norm_evolution_plot = plot(sol_LDG.prob.p.t[1:end-1], diff(sol_LDG.prob.p.du_visc_norm),
         xlabel = L"$t$", ylabel = L"$||du_{visc}||^2$", ylims = (-100.0,100.0),
@@ -766,7 +770,7 @@ elseif initial_condition_type == :shu_osher
     plot!(du_visc_norm_evolution_plot, sol_BR1.prob.p.t[1:end-1], diff(sol_BR1.prob.p.du_visc_norm),
         label = "$(sol_BR1.prob.p.AV_type) $(sol_BR1.destats.naccept) time steps")
 
-    savefig(du_visc_norm_evolution_plot, "Shu_Osher_plots/du_visc_norm_evolution_$(DG_type).pdf")
+    savefig(du_visc_norm_evolution_plot, joinpath(path_to_plots, "du_visc_norm_evolution_$(DG_type).pdf"))
 
 
 
@@ -790,7 +794,7 @@ elseif initial_condition_type == :shu_osher
         yscale = :log10,
         label = "$(sol_BR1.prob.p.AV_type) $(sol_BR1.destats.naccept) time steps")
 
-    savefig(epsilon_evolution_plot, "Shu_Osher_plots/epsilon_evolution_$(DG_type).pdf")
+    savefig(epsilon_evolution_plot, joinpath(path_to_plots, "epsilon_evolution_$(DG_type).pdf"))
 
     up = rd.Vp * getindex.(parent(sol_LDG.u[end]), 1)
     xp = rd.Vp * md.x
@@ -814,7 +818,7 @@ elseif initial_condition_type == :shu_osher
     linewidth = 3,
      label = "$(sol_BR1.prob.p.AV_type) AV")
 
-    savefig(density_plot, "Shu_Osher_plots/density_$(sol_LDG.prob.p.DG_type).pdf")
+    savefig(density_plot, joinpath(path_to_plots, "density_$(sol_LDG.prob.p.DG_type).pdf"))
     
 
 elseif initial_condition_type == :Euler_problem_1

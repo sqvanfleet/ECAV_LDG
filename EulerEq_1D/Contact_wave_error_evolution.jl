@@ -5,8 +5,9 @@ using StaticArrays
 using Plots
 using LaTeXStrings
 
+base_path = @__DIR__
 
-data = load("Contact_wave_data/N2_K80_tspan4.0.jld2", "rd", "md", "sol", "L2_error")
+data = load(joinpath(base_path, "Contact_wave_data", "N2_K80_tspan4.0.jld2"), "rd", "md", "sol", "L2_error")
 
 rd = data[1]
 md = data[2]
@@ -34,7 +35,8 @@ p1 = plot(sol.t[2:end], L2_error[2:end],
 
 
 for i in [4,6,8]
-    local data = load("Contact_wave_data/N$(i)_K80_tspan4.0.jld2", "rd", "md", "sol", "L2_error")
+    local loop_file = joinpath(base_path, "Contact_wave_data", "N$(i)_K80_tspan4.0.jld2")
+    local data = load(loop_file, "rd", "md", "sol", "L2_error")
     local rd = data[1]
     local md = data[2]
     local sol = data[3]
