@@ -47,4 +47,4 @@ for i in [4,6,8]
 
 end
 
-savefig(p1, "Contact_wave_plots/L2_error_evolution.pdf")
+savefig(p1, joinpath(base_path, "Contact_wave_data", "Contact_wave_error_evolution.png"))
