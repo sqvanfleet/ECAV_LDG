@@ -460,7 +460,7 @@ elseif  initial_condition_type == :density_wave
     path_to_plots = joinpath(@__DIR__, "Density_Wave_Plots")
     mkpath(path_to_plots)
     
-    savefig(p, joinpath("Density_Wave_Plots", "max_epsilon_$(sol.prob.p.DG_type)_K_$(K1D).png"))
+    savefig(p, joinpath(path_to_plots, "max_epsilon_$(sol.prob.p.DG_type)_K_$(K1D).png"))
 
     #Plot the l2 norm of the epsilon values
 
@@ -484,7 +484,7 @@ elseif  initial_condition_type == :density_wave
         label = label = L"$\||\epsilon\||_{\ell^2}$ SC", linewidth = 3)
 
     display(p)
-    savefig(p, joinpath("Density_Wave_Plots", "l2_epsilon_$(sol.prob.p.DG_type)_K_$(K1D).png"))
+    savefig(p, joinpath(path_to_plots, "l2_epsilon_$(sol.prob.p.DG_type)_K_$(K1D).png"))
 
     #Plot the L2 error evolution
     q = plot(sol.prob.p.t, sol.prob.p.L2_error,
@@ -525,7 +525,7 @@ elseif  initial_condition_type == :density_wave
     "\$$(round(L2_error_ecav_dg_fem, sigdigits = sig))\$ \\\\"
     println(latex_row)
 
-    savefig(q, joinpath("Density_Wave_Plots", "error_$(sol.prob.p.DG_type)_K_$(K1D).png"))
+    savefig(q, joinpath(path_to_plots, "error_$(sol.prob.p.DG_type)_K_$(K1D).png"))
 
     #Plot densities at the final time
     rho_sc = rd.Vp * getindex.(parent(sol_sc.u[end]), 1)
@@ -593,7 +593,7 @@ elseif  initial_condition_type == :density_wave
         color = :green)
     display(p)
 
-    savefig(p, joinpath("Density_Wave_Plots", "density_$(sol.prob.p.DG_type)_K_$(K1D).png"))
+    savefig(p, joinpath(path_to_plots, "density_$(sol.prob.p.DG_type)_K_$(K1D).png"))
 
 
 elseif initial_condition_type == :sod_shock_tube
