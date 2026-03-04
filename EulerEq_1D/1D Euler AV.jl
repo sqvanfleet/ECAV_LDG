@@ -635,7 +635,7 @@ elseif initial_condition_type == :stationary_contact_wave
         initial_condition_type, AV_type, t, max_epsilon, DG_type,
         du_visc_norm, sigma_norm, du_Euler_norm, du_Euler_AV_norm, L2_error)
 
-    folder = joinpath(@__DIR__, "Density_Wave_data")
+    folder = joinpath(@__DIR__, "Contact_wave_data")
 
     mkpath(folder)
 
