@@ -1,0 +1,163 @@
+using JLD2
+
+N_1_K_4 = load("Density_wave_Data/N1_K4_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_1_K_8 = load("Density_wave_Data/N1_K8_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_1_K_16 = load("Density_wave_Data/N1_K16_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_1_K_32 = load("Density_wave_Data/N1_K32_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_1_K_64 = load("Density_wave_Data/N1_K64_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+
+error_N_4 = N_1_K_4[4]
+error_N_8 = N_1_K_8[4]
+error_N_16 = N_1_K_16[4]
+error_N_32 = N_1_K_32[4]
+error_N_64 = N_1_K_64[4]
+
+rel_error_N_4 = N_1_K_4[5]
+rel_error_N_8 = N_1_K_8[5]
+rel_error_N_16 = N_1_K_16[5]
+rel_error_N_32 = N_1_K_32[5]
+rel_error_N_64 = N_1_K_64[5]
+
+errors_N_1 = [error_N_4, error_N_8, error_N_16, error_N_32, error_N_64]
+rel_errors_N_1 = [rel_error_N_4, rel_error_N_8, rel_error_N_16, rel_error_N_32, rel_error_N_64]
+
+# L2_rates = log.(L2_errors[2:end, :] ./ L2_errors[1:end-1,:]) / log(0.5)
+
+error_ratio_N_1 = log.(errors_N_1[2:end] ./ errors_N_1[1:end-1]) / log(0.5)
+
+# error_ratio_N_1 = (1/log(2))*log.([error_N_4/ error_N_8, error_N_8/error_N_16,
+#                      error_N_16/error_N_32, error_N_32/error_N_64])
+rel_error_ratio_N_1 = (1/log(2))*log.([rel_error_N_4/ rel_error_N_8, rel_error_N_8/rel_error_N_16,
+                    rel_error_N_16/rel_error_N_32,rel_error_N_32/rel_error_N_64])
+
+
+N_2_K_4 = load("Density_wave_Data/N2_K4_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_2_K_8 = load("Density_wave_Data/N2_K8_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_2_K_16 = load("Density_wave_Data/N2_K16_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_2_K_32 = load("Density_wave_Data/N2_K32_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_2_K_64 = load("Density_wave_Data/N2_K64_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+
+error_N_4 = N_2_K_4[4]
+error_N_8 = N_2_K_8[4]
+error_N_16 = N_2_K_16[4]
+error_N_32 = N_2_K_32[4]
+error_N_64 = N_2_K_64[4]
+
+rel_error_N_4 = N_2_K_4[5]
+rel_error_N_8 = N_2_K_8[5]
+rel_error_N_16 = N_2_K_16[5]
+rel_error_N_32 = N_2_K_32[5]
+rel_error_N_64 = N_2_K_64[5]
+
+errors_N_2 = [error_N_4, error_N_8, error_N_16, error_N_32, error_N_64]
+rel_errors_N_2 = [rel_error_N_4, rel_error_N_8, rel_error_N_16, rel_error_N_32, rel_error_N_64]
+
+error_ratio_N_2 = log.(errors_N_2[2:end] ./ errors_N_2[1:end-1]) / log(0.5)
+
+# error_ratio_N_2 = (1/log(2))*log.([error_N_4/ error_N_8, error_N_8/error_N_16,
+#                      error_N_16/error_N_32, error_N_32/error_N_64])
+rel_error_ratio_N_2 = (1/log(2))*log.([rel_error_N_4/ rel_error_N_8, rel_error_N_8/rel_error_N_16,
+                    rel_error_N_16/rel_error_N_32,rel_error_N_32/rel_error_N_64])
+
+N_3_K_4 = load("Density_wave_Data/N3_K4_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_3_K_8 = load("Density_wave_Data/N3_K8_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_3_K_16 = load("Density_wave_Data/N3_K16_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_3_K_32 = load("Density_wave_Data/N3_K32_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_3_K_64 = load("Density_wave_Data/N3_K64_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+
+error_N_4 = N_3_K_4[4]
+error_N_8 = N_3_K_8[4]
+error_N_16 = N_3_K_16[4]
+error_N_32 = N_3_K_32[4]
+error_N_64 = N_3_K_64[4]
+
+rel_error_N_4 = N_3_K_4[5]
+rel_error_N_8 = N_3_K_8[5]
+rel_error_N_16 = N_3_K_16[5]
+rel_error_N_32 = N_3_K_32[5]
+rel_error_N_64 = N_3_K_64[5]
+
+errors_N_3 = [error_N_4, error_N_8, error_N_16, error_N_32, error_N_64]
+rel_errors_N_3 = [rel_error_N_4, rel_error_N_8, rel_error_N_16, rel_error_N_32, rel_error_N_64]
+
+error_ratio_N_3 = log.(errors_N_3[2:end] ./ errors_N_3[1:end-1]) / log(0.5)
+
+# error_ratio_N_3 = (1/log(2))*log.([error_N_4/ error_N_8, error_N_8/error_N_16,
+#                      error_N_16/error_N_32, error_N_32/error_N_64])
+rel_error_ratio_N_3 = (1/log(2))*log.([rel_error_N_4/ rel_error_N_8, rel_error_N_8/rel_error_N_16,
+                    rel_error_N_16/rel_error_N_32,rel_error_N_32/rel_error_N_64])
+
+
+N_4_K_4 = load("Density_wave_Data/N4_K4_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_4_K_8 = load("Density_wave_Data/N4_K8_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_4_K_16 = load("Density_wave_Data/N4_K16_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_4_K_32 = load("Density_wave_Data/N4_K32_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+N_4_K_64 = load("Density_wave_Data/N4_K64_modal_BR1.jld2", "rd", "md", "sol", "L2_norm", "L2_rel_norm")
+
+error_N_4 = N_4_K_4[4]
+error_N_8 = N_4_K_8[4]
+error_N_16 = N_4_K_16[4]
+error_N_32 = N_4_K_32[4]
+error_N_64 = N_4_K_64[4]
+
+rel_error_N_4 = N_4_K_4[5]
+rel_error_N_8 = N_4_K_8[5]
+rel_error_N_16 = N_4_K_16[5]
+rel_error_N_32 = N_4_K_32[5]
+rel_error_N_64 = N_4_K_64[5]
+
+errors_N_4 = [error_N_4, error_N_8, error_N_16, error_N_32, error_N_64]
+rel_errors_N_4 = [rel_error_N_4, rel_error_N_8, rel_error_N_16, rel_error_N_32, rel_error_N_64]
+
+error_ratio_N_4 = log.(errors_N_4[2:end] ./ errors_N_4[1:end-1]) / log(0.5)
+
+# error_ratio_N_4 = (1/log(2))*log.([error_N_4/ error_N_8, error_N_8/error_N_16,
+#                      error_N_16/error_N_32, error_N_32/error_N_64])
+rel_error_ratio_N_4 = (1/log(2))*log.([rel_error_N_4/ rel_error_N_8, rel_error_N_8/rel_error_N_16,
+                    rel_error_N_16/rel_error_N_32,rel_error_N_32/rel_error_N_64])
+
+using Printf
+
+K_values = [4,8,16,32,64]
+
+# Store all errors and ratios in dictionaries for easy looping
+errors = Dict(
+    1 => errors_N_1,
+    2 => errors_N_2,
+    3 => errors_N_3,
+    4 => errors_N_4
+)
+
+ratios = Dict(
+    1 => error_ratio_N_1,
+    2 => error_ratio_N_2,
+    3 => error_ratio_N_3,
+    4 => error_ratio_N_4
+)
+
+# Initialize table string
+table_str = ""
+table_str *= "\\begin{table}[h]\n"
+table_str *= "\\centering\n"
+table_str *= "\\begin{tabular}{|c | c c | c c | c c | c c|}\n"
+table_str *= "\\hline\n"
+table_str *= "K & \\multicolumn{2}{|c|}{N=1} & \\multicolumn{2}{|c|}{N=2} & \\multicolumn{2}{|c|}{N=3} & \\multicolumn{2}{c|}{N=4} \\\\\n"
+table_str *= "  & Error & Rate & Error & Rate & Error & Rate & Error & Rate \\\\\n"
+table_str *= "\\hline\n"
+
+# Fill rows
+for (i, K) in enumerate(K_values)
+    row = @sprintf("%d", K)
+    for N in 1:4
+        err = errors[N][i]
+        # Rate should be "-" for the first row (no previous data)
+        rate = i == 1 ? NaN : ratios[N][i - 1]
+        row *= @sprintf(" & %.3e & %s", err, isnan(rate) ? "-" : @sprintf("%.2f", rate))
+    end
+    global table_str *= row * " \\\\\n"
+end
+
+table_str *= "\\hline\n\\end{tabular}\n\\caption{Convergence study errors and rates}\n\\end{table}\n"
+
+println(table_str)
+
