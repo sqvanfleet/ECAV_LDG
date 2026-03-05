@@ -19,8 +19,9 @@ There are three directories in this repository, seven of them are aggregation-di
 
 ##Example 5.3 Shu Isentropic Euler Vortex
 1. navigate to the `EulerEq_2D` folder
-2. open `2D_Euler_AV.jl` can complete the following:
-   - 
+2. open the `2D_Euler_AV.jl` file and ensure line 142 is
+   uncommented and lines 121,143,144 are commented, then run `2D_Euler_AV.jl`
+3. 
    
 
 
