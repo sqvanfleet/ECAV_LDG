@@ -290,8 +290,8 @@ end
 #shu_isentropic_euler_vortex Problem
 if initial_condition_type == :shu_isentropic_vortex
 
-        N_list = [3,4]
-        K_list = [128]
+        N_list = [1,2,3,4]
+        K_list = [16,32,64,128]
 
         DG_type = :modal
         AV_discretization = :LDG
