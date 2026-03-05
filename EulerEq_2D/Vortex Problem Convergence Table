@@ -146,11 +146,13 @@ if ConvergenceTable == :yes
 
     #Order 1
 
-    L2_error_K16_N1 = load("Vortex_Data_10/N1_K16_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K32_N1 = load("Vortex_Data_10/N1_K32_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K64_N1 = load("Vortex_Data_10/N1_K64_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K128_N1 = load("Vortex_Data_10/N1_K128_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
+    data_path = joinpath(@__DIR__, "Vortex_Data_10")
 
+    L2_error_K16_N1 = load(joinpath(data_path, "N1_K16_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K32_N1 = load(joinpath(data_path, "N1_K32_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K64_N1 = load(joinpath(data_path, "N1_K64_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K128_N1 = load(joinpath(data_path, "N1_K128_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    
     error_ratio_N1 = [
         L2_error_K16_N1 / L2_error_K32_N1,
         L2_error_K32_N1 / L2_error_K64_N1,
@@ -164,11 +166,11 @@ if ConvergenceTable == :yes
         L2_error_K64_N1,
         L2_error_K128_N1]
 
-    L2_error_K16_N2 = load("Vortex_Data_10/N2_K16_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K32_N2 = load("Vortex_Data_10/N2_K32_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K64_N2 = load("Vortex_Data_10/N2_K64_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K128_N2 = load("Vortex_Data_10/N2_K128_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-
+    L2_error_K16_N2 = load(joinpath(data_path, "N2_K16_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K32_N2 = load(joinpath(data_path, "N2_K32_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K64_N2 = load(joinpath(data_path, "N2_K64_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K128_N2 = load(joinpath(data_path, "N2_K128_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+   
     error_ratio_N2 = [
         L2_error_K16_N2 / L2_error_K32_N2,
         L2_error_K32_N2 / L2_error_K64_N2,
@@ -184,10 +186,12 @@ if ConvergenceTable == :yes
 
 
     #Order =3
-    L2_error_K16_N3 = load("Vortex_Data_10/N3_K16_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K32_N3 = load("Vortex_Data_10/N3_K32_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K64_N3 = load("Vortex_Data_10/N3_K64_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K128_N3 = load("Vortex_Data_10/N3_K128_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
+
+    L2_error_K16_N3 = load(joinpath(data_path, "N3_K16_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K32_N3 = load(joinpath(data_path, "N3_K32_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K64_N3 = load(joinpath(data_path, "N3_K64_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K128_N3 = load(joinpath(data_path, "N3_K128_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");     
+
 
     error_ratio_N3 = [
         L2_error_K16_N3 / L2_error_K32_N3,
@@ -203,10 +207,10 @@ if ConvergenceTable == :yes
         L2_error_K128_N3]
 
     #Order 4
-    L2_error_K16_N4 = load("Vortex_Data_10/N4_K16_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K32_N4 = load("Vortex_Data_10/N4_K32_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K64_N4 = load("Vortex_Data_10/N4_K64_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
-    L2_error_K128_N4 = load("Vortex_Data_10/N4_K128_T15.0_$(DG_type)_LDG_flux_hllc.jld2", "L2_rel_norm");
+    L2_error_K16_N4 = load(joinpath(data_path, "N4_K16_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K32_N4 = load(joinpath(data_path, "N4_K32_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K64_N4 = load(joinpath(data_path, "N4_K64_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
+    L2_error_K128_N4 = load(joinpath(data_path, "N4_K128_T15.0_$(DG_type)_LDG_flux_hllc.jld2"), "L2_rel_norm");
 
     error_ratio_N4 = [
         L2_error_K16_N4 / L2_error_K32_N4,
@@ -259,191 +263,3 @@ function shu_isentropic_euler_vortex(x,y,t,L,gamma,equations::CompressibleEulerE
     p = (1/gamma)*(1.0 - 0.5 * (gamma - 1.0) * Omega(r)^2)^(gamma/(gamma - 1.0))
     return prim2cons(SVector(rho, u, v, p), equations)
 end
-
-# psi_1(u, normal, ::CompressibleEulerEquations2D) = u[2] * normal
-# psi_2(u, normal, ::CompressibleEulerEquations2D) = u[3] * normal
-
-# dudv(v, equations) = ForwardDiff.jacobian(v -> entropy2cons(v, equations), v)
-
-# function compute_L2_error(rd, md, ux, vx, u, t, L, gamma, equations::CompressibleEulerEquations2D)
-#     u_exact = @. shu_isentropic_euler_vortex(md.xq - ux*t, md.yq - vx*t, 0.0, L, gamma, equations)
-    
-#     # Compute the L2 norm of the error
-#     L2_norm = sqrt(sum(md.wJq .* norm.(rd.Vq * u - u_exact).^2))
-
-#     return L2_norm
-# end
-
-
-# function compute_quantities(params, u)
-
-#     (; rd, md, equations, AV_discretization) = params
-
-#     display(AV_discretization)
-
-#     #compute entropy variables 
-#     v = rd.Pq * cons2entropy.(rd.Vq * u, equations)
-
-#     invMQTr = -rd.M \ (rd.Dr' * rd.M)
-#     invMQTs = -rd.M \ (rd.Ds' * rd.M)
-#     #uM = rd.Vf * u
-#     #The function entropy2cons is having trouble with some problems
-#     uM = entropy2cons.(rd.Vf * v, equations)
-#     uP = uM[md.mapP]
-#     vM = cons2entropy.(uM, equations)
-#     vP = cons2entropy.(uP, equations)
-
-#     interface_flux = @. params.interface_flux(uM, uP, SVector(md.nxJ, md.nyJ), equations)
-
-#     duvol = md.rxJ .* (invMQTr * flux.(u, 1, equations)) + md.sxJ .* (invMQTs * flux.(u, 1, equations)) +
-#             md.ryJ .* (invMQTr * flux.(u, 2, equations)) + md.syJ .* (invMQTs * flux.(u, 2, equations))
-
-#     du = similar(u)
-#     du .=  duvol + rd.LIFT * interface_flux
-
-#     if AV_discretization == :LDG
-#             beta = @. sign(md.nxJ + md.nyJ)
-#     elseif AV_discretization == :BR1
-#             beta = 0.0
-#     end
-    
-#     #compute thetas
-#     theta_1 = (md.rxJ.* (invMQTr * v) + md.sxJ.* (invMQTs * v) 
-#                     + rd.LIFT * (@. 0.5 * (vP + vM) * md.nxJ - 0.5 * beta * (vP - vM) * md.nxJ)) ./ md.J
-
-#     theta_2 = (md.ryJ.* (invMQTr * v) + md.syJ.* (invMQTs * v)
-#                     + rd.LIFT * (@. 0.5 * (vP + vM) * md.nyJ - 0.5 * beta * (vP - vM) * md.nyJ)) ./ md.J
-#     #Compute Epsilon
-#     term1 = dot.(v, rd.M * duvol)
-#     term2 = @. rd.wf * (psi_1(uM, md.nxJ, equations) + psi_2(uM, md.nyJ, equations))
-#     delta = sum(term1, dims=1) + sum(term2, dims=1)
-#     num = @. -min(0, delta)
-#     v_avg = repeat(0.5 * sum(Diagonal(rd.wq) * (rd.Vq * v), dims=1), rd.Np, 1)
-#     K = dudv.(rd.Vq * v_avg, equations)
-#     sigma_1 = rd.Pq * (K .* (rd.Vq * theta_1))
-#     sigma_2 = rd.Pq * (K .* (rd.Vq * theta_2))
-#     den = sum(md.wJq .* dot.(rd.Vq * sigma_1, rd.Vq * theta_1), dims=1) + 
-#             sum(md.wJq .* dot.(rd.Vq * sigma_2, rd.Vq * theta_2), dims=1)
-#     epsilon = @. num * den / (1e-14 + den^2)
-
-#     #Compute sigmas
-        
-#     sigma_1 = sigma_1 * Diagonal(vec(epsilon))
-#     sigma_2 = sigma_2 * Diagonal(vec(epsilon))
-#     sigma_1M = rd.Vf * sigma_1
-#     sigma_1P = sigma_1M[md.mapP]
-#     sigma_2M = rd.Vf * sigma_2
-#     sigma_2P = sigma_2M[md.mapP]
-
-
-#     du .-= md.rxJ .* (invMQTr * sigma_1) + md.sxJ .* (invMQTs * sigma_1) +
-#             md.ryJ .* (invMQTr * sigma_2) + md.syJ .* (invMQTs * sigma_2) +
-#             rd.LIFT * (@. 0.5 * (sigma_1P + sigma_1M) * md.nxJ - 0.5 * beta * (sigma_1P - sigma_1M) * md.nyJ) +
-#             rd.LIFT * (@. 0.5 * (sigma_2P + sigma_2M) * md.nyJ - 0.5 * beta * (sigma_2P - sigma_2M) * md.nyJ)  
-
-#     @. du /= -md.J
-
-#     interface_flux = @. params.interface_flux(vM, vP, SVector(md.nxJ, md.nyJ), equations)
-#     dSdt = sum(dot.(v,rd.M*(md.J .* du)))
-
-#     return epsilon, delta, dSdt, den
-# end
-
-# data = load("Vortex_Data_10/N4_K64_T18.664319132398465_$(DG_type)_LDG.jld2", "md", "rd", "sol")
-
-# md = data[1]
-# rd = data[2]
-# sol = data[3]
-
-# params = (; rd, md, equations, interface_flux = flux_lax_friedrichs, AV_discretization = :LDG)
-
-# x, y = md.x, md.y
-
-# alpha = pi/4
-# M_inf = sqrt(2.0/gamma)
-# ux = M_inf * cos(alpha)
-# vx = M_inf * sin(alpha)
-
-# L2_error_evolution_LDG = zeros(length(sol.t))
-# epsilon_evolution_LDG = zeros(length(sol.t))
-# delta_evolution_LDG = zeros(length(sol.t))
-# dSdt_evolution_LDG = zeros(length(sol.t))
-# den_evolution_LDG = zeros(length(sol.t))
-
-# L2_error_evolution_BR1 = zeros(length(sol.t))
-# epsilon_evolution_BR1 = zeros(length(sol.t))
-# delta_evolution_BR1 = zeros(length(sol.t))
-# dSdt_evolution_BR1 = zeros(length(sol.t))
-# den_evolution_BR1 = zeros(length(sol.t))
-
-# for (i, u) in enumerate(sol.u)
-#     temp =  parent(u)# Ensure u is evaluated
-#     display(i)
-#     #Compute the L2 norm of the error
-#     L2_error_evolution_LDG[i] = compute_L2_error(rd, md, ux, vx, temp, sol.t[i], 10.0, gamma, equations)
-#     #Compute Epsilon
-#     epsilon, delta, dSdt, den = compute_quantities(params, temp)
-#     epsilon_evolution_LDG[i] = maximum(epsilon)
-#     delta_evolution_LDG[i] = maximum(delta)
-#     dSdt_evolution_LDG[i] = dSdt
-#     den_evolution_LDG[i] = minimum(den)
-# end
-
-# u = parent(sol.u[end])
-
-# epsilon, delta, dSdt, den = compute_quantities(params, u)
-
-# display(den)
-
-# data = load("Vortex_Data_10/N4_K64_T18.664319132398465_$(DG_type)_BR1.jld2", "md", "rd", "sol")
-
-# md = data[1]
-# rd = data[2]
-# sol = data[3]
-
-# params = (; rd, md, equations, interface_flux = flux_lax_friedrichs, AV_discretization = :BR1)
-
-# x, y = md.x, md.y
-
-# for (i, u) in enumerate(sol.u)
-#     temp =  parent(u)# Ensure u is evaluated
-#     display(i)
-#     #Compute the L2 norm of the error
-#     L2_error_evolution_BR1[i] = compute_L2_error(rd, md, ux, vx, temp, sol.t[i], 10.0, gamma, equations)
-#     #Compute Epsilon
-#     epsilon, delta, dSdt, den = compute_quantities(params, temp)
-#     epsilon_evolution_BR1[i] = maximum(abs.(epsilon))
-#     delta_evolution_BR1[i] = maximum(delta)
-#     dSdt_evolution_BR1[i] = dSdt
-#     den_evolution_BR1[i] = minimum(den)
-# end
-# # for the errors plot some other errors with different N and K1D
-# L2_error_plot = plot(sol.t, L2_error_evolution_LDG, xlabel="Time", ylabel="L2 Error", title="L2 Error Evolution", label="L2 Error LDG", legend=:bottomright)
-# plot!(L2_error_plot,sol.t, L2_error_evolution_BR1, label="L2 Error BR1", color=:red)
-# display(L2_error_plot)
-
-# epsilon_plot = plot(sol.t, epsilon_evolution_LDG, xlabel=L"$t$", ylabel=L"$\varepsilon$", title=L"Evolution of $\varepsilon$",yguidefontrotation = -90, left_margin = 10Plots.mm, label="Epsilon LDG", legend=false)
-# plot!(sol.t, epsilon_evolution_BR1, label="Epsilon BR1", color=:red)
-# display(epsilon_plot)
-# savefig("Vortex_Plots/epsilon_evolution_Vortex.pdf")
-
-# delta_plot = plot(sol.t, delta_evolution_LDG, xlabel="Time", ylabel="Delta", title="Delta Evolution", label="Delta LDG", legend=:bottomright)
-# plot!(delta_plot, sol.t, delta_evolution_BR1, label="Delta BR1", color=:red)
-# display(delta_plot)
-
-# #display(plot(sol.t, den_evolution_BR1, xlabel="Time", ylabel="Denominator", title="Denominator Evolution", label="Denominator BR1", legend=:bottomright))
-
-# den_plot = plot(sol.t, den_evolution_LDG, xlabel="Time", ylabel="Denominator", title="Denominator Evolution", label="Denominator LDG", legend=:topleft)
-# plot!(den_plot, sol.t, den_evolution_BR1, label="Denominator BR1", color=:red)
-# display(den_plot)
-
-# # u = parent(sol.u[end])
-
-# # epsilon, delta, dSdt, den = compute_quantities(params, u)
-
-# # display(den)
-
-# dSdt_evolution_plot = plot(sol.t, dSdt_evolution_LDG, xlabel=L"$t$", ylabel= L"$\int_{D}\frac{\mathrm{d}S}{\mathrm{d}t}$",yguidefontrotation = -90, left_margin = 10Plots.mm,  title=L"Evolution of $\int_{D}\frac{\mathrm{d}S}{\mathrm{d}t}$", label="LDG", legend=:topright)
-# plot!(dSdt_evolution_plot, sol.t, dSdt_evolution_BR1, label="BR1", color=:red)
-# display(dSdt_evolution_plot)
-# savefig("Vortex_Plots/dSdt_evolution_Vortex.pdf")
