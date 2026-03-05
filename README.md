@@ -1,5 +1,5 @@
 # On the choice of viscous discontinuous Galerkin discretization for entropy correction artificial viscosity methods
-This repository includes the Julia code for each numerical example given in section 5 of 
+This repository includes the Julia code for each numerical example given in Section 5 of 
 [this paper](https://arxiv.org/abs/2602.23210).  The goal is that any reader may reproduce the results shown for each example.  
 
 ## Collaborator 
@@ -7,20 +7,22 @@ This repository includes the Julia code for each numerical example given in sect
 
 ## Contents 
 
-There are three directories in this repository, seven of them are aggregation-diffusion equation examples, which correspond to examples 4.1 - 4.4:
+There are three directories in this repository, seven of them are aggregation-diffusion equation examples, which correspond to the examples in Section 5:
 1. `Burgers_2D` (example 5.1)
 2. `EulerEq_1D` (example 5.4, 5.6, and 5.7)
-3. `EulerEq_2D` (example 5.3, 5.5)
+3. `EulerEq_2D` (example 5.3, 5.5) 
 
-## MATLAB requirements
+##Example 5.1 2D Inviscid Burgers Equation, Figure 1
+1. Navigate to the `Burgers_2D` folder
+2. Run `Burgers_2D.jl`
+3. Run `make_plots.jl`, the plots in Figure 1 will be in the Plots folder
 
-All of the files in this repository were tested on MATLAB version R2022b.  The examples corresponding to the Landau equation require the [Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html), but can be modified to be used in serial. 
+##Example 5.3 Shu Isentropic Euler Vortex
+1. navigate to the `EulerEq_2D` folder
+2. open `2D_Euler_AV.jl` can complete the following:
+   - 
+   
 
-## Project description
-
-### `particle_method.m` or `particle_method_2d_parallel.m` scripts
-
-#### Parameters, initialization, and mesh generation
 
 - The `particle_method.m` or `particle_method_2d_parallel.m` scripts begin by defining several parameters including:
 - `n_list` which is a matrix whose elements are how many particles you want to calculate the particle method solution with.  The entries of this array are chosen by the user.  The entries of `n_list` correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  The outermost loop in `particle_method.m` or `particle_method_2d_parallel.m` uses the loop variable `alpha` and loops over all values in `n_list`.  For each iteration of this loop the number of particles is
