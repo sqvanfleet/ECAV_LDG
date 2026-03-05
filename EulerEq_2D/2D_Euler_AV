@@ -139,9 +139,9 @@ equations = CompressibleEulerEquations2D(gamma)
 
 #Choose the 2D Euler equations problem
 #initial_condition_type = :density_wave
-#initial_condition_type = :shu_isentropic_vortex
+initial_condition_type = :shu_isentropic_vortex
 #initial_condition_type = :Riemann_problem_config_1
-initial_condition_type = :Shock_vortex_interaction
+#initial_condition_type = :Shock_vortex_interaction
 
 #Choose Modal or Nodal
 #DG_type = :nodal
@@ -178,8 +178,8 @@ if initial_condition_type == :Shock_vortex_interaction
                 saveat = LinRange(tspan..., 50), 
                 callback = AliveCallback(alive_interval=100))
 
-    base_path = joinpath(@__DIR__, "Shock_vortex_interaction_Data")
-    mkpath(base_path)
+    data_path = joinpath(@__DIR__, "Shock_vortex_interaction_Data")
+    mkpath(data_path) 
     xp, yp = md.x, md.y
 
     # Define the indices we want to plot: Start, Middle-ish, and End
@@ -197,26 +197,24 @@ if initial_condition_type == :Shock_vortex_interaction
         
         gmax, gmin = maximum(g), minimum(g)
         rho_schl = @. exp(-10 * (g - gmin) / (gmax - gmin))
-
+        plots_path = joinpath(@__DIR__)
         p_schl = scatter(vec(xp), vec(yp), zcolor=vec(rho_schl),
                          msw=0, ms=0.5, legend=false, ratio=1, cam=(0,90), 
                          c=:red, colorbar=true, guidefontsize=20, tickfontsize=20)
-
-        savefig(p_schl, "Shock_vortex_interaction_plots/schlieren_t_$(t_val).png")
-        export_to_vtk(rd, md, [rho_schl], "Shock_vortex_interaction_plots/schlieren_t_$(t_val).vtu")
+        savefig(p_schl, joinpath(plots_path, "schlieren_t_$(t_val).png"))
+        export_to_vtk(rd, md, [rho_schl], joinpath(plots_path, "schlieren_t_$(t_val).vtu"))
+        
 
         # --- 2. Plot Density ---
         p_dens = scatter(vec(xp), vec(yp), zcolor=vec(rho), clims=(0.85, 1.20), 
                          msw=0, ms=0.5, legend=false, ratio=1, cam=(0,90),
                          c=:red, colorbar=true, guidefontsize=20, tickfontsize=20)
-
-        savefig(p_dens, "Shock_vortex_interaction_plots/density_t_$(t_val).png")
-        export_to_vtk(rd, md, [rho], "Shock_vortex_interaction_plots/density_t_$(t_val).vtu")
+        savefig(p_dens, joinpath(plots_path, "density_t_$(t_val).png"))
+        export_to_vtk(rd, md, [rho], joinpath(plots_path, "density_t_$(t_val).vtu"))
     end
 
     # --- 3. Save Data ---
-    mkpath("Shock_vortex_interaction_Data")
-    filename = "Shock_vortex_interaction_Data/N$(N)_K_$(2*K1D)x$(K1D)_T$(Final_time)_$(DG_type)_$(AV_discretization).jld2"
+    filename = joinpath(data_path, "N$(N)_K$(2*K1D)x$(K1D)_T$(Final_time)_$(DG_type)_$(AV_discretization).jld2")
     @save filename md rd sol
 end
 
