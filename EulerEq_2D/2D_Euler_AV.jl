@@ -138,10 +138,10 @@ gamma = 1.4
 equations = CompressibleEulerEquations2D(gamma)
 
 #Choose the 2D Euler equations problem
-#initial_condition_type = :density_wave
-initial_condition_type = :shu_isentropic_vortex
-#initial_condition_type = :Riemann_problem_config_1
-#initial_condition_type = :Shock_vortex_interaction
+# initial_condition_type = :density_wave
+# initial_condition_type = :shu_isentropic_vortex
+# initial_condition_type = :Riemann_problem_config_1
+initial_condition_type = :Shock_vortex_interaction
 
 #Choose Modal or Nodal
 #DG_type = :nodal
@@ -149,7 +149,7 @@ DG_type = :modal
 
 #Mesh Parameters
 N = 2 #Order of Polynomial
-K1D = 32 #Number of elements in each direction
+K1D = 16 #Number of elements in each direction
 
 #BR1 versus LDG switch
 #AV_discretization = :BR1
@@ -197,7 +197,8 @@ if initial_condition_type == :Shock_vortex_interaction
         
         gmax, gmin = maximum(g), minimum(g)
         rho_schl = @. exp(-10 * (g - gmin) / (gmax - gmin))
-        plots_path = joinpath(@__DIR__)
+        plots_path = joinpath(@__DIR__, "Shock_vortex_interaction_plots")
+        mkpath(plots_path)
         p_schl = scatter(vec(xp), vec(yp), zcolor=vec(rho_schl),
                          msw=0, ms=0.5, legend=false, ratio=1, cam=(0,90), 
                          c=:red, colorbar=true, guidefontsize=20, tickfontsize=20)
