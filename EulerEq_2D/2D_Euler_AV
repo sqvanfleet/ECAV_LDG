@@ -362,7 +362,7 @@ if initial_condition_type == :shu_isentropic_vortex
 
                         local base_path = @__DIR__
 
-                        local folder = jointpath(base_path, "Vortex_Data_10")
+                        local folder = joinpath(base_path, "Vortex_Data_10")
                         mkpath(folder)
                         local filename = "N$(N)_K$(K1D)_T$(sol.t[end])_$(DG_type)_$(AV_discretization)_$(sol.prob.p.interface_flux).jld2"
                         
