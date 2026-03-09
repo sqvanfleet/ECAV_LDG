@@ -32,6 +32,31 @@ function stationary_contact_wave(x, equations::CompressibleEulerEquations1D;
     return prim2cons(SVector(rho, u, p), equations)
 end
 
+function stationary_contact_wave_piecewise(x, equations::CompressibleEulerEquations1D; 
+                                        amplitude = 0.5)
+    if abs(x) < 0.3
+        rho = 1.0 + amplitude
+    else
+        rho = 1.0
+    end
+    u = 0.0
+    p = 1.0
+
+    return prim2cons(SVector(rho, u, p), equations)
+end
+
+function stationary_contact_wave_piecewise_smooth(x, equations::CompressibleEulerEquations1D; 
+                                        amplitude = 0.5)
+    rho = 1.0 + amplitude * (sin(2*pi*x) + (abs(x) < 0.3))
+    u = 0.0
+    p = 1.0
+
+    return prim2cons(SVector(rho, u, p), equations)
+end
+
+
+
+
 function initial_condition_density_wave(x, equations::CompressibleEulerEquations1D; 
                                         amplitude = 0.5, a = 10.0)
     rho = 1.0 + 0.5 * exp(-a * sin(pi * x)^2)

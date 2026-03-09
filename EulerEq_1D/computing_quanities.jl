@@ -5,6 +5,8 @@ using JLD2
 using Trixi
 using StaticArrays
 
+include("initial_conditions.jl")
+
 #Compute the error at each saved time
 function compute_L2_error_evolution_stationary_contact_wave(sol, equations, md, rd)
     L2_error = zeros(length(sol.t))
@@ -14,6 +16,33 @@ function compute_L2_error_evolution_stationary_contact_wave(sol, equations, md, 
     wJq = wq.*Vq*md.J
         for (i, t) in enumerate(sol.t)
             error = Vq * parent(sol.u[i]) - stationary_contact_wave.(xq, equations)
+            L2_error[i] = sqrt(sum(wJq .* norm.(error).^2))
+        end
+    return L2_error
+end
+
+function compute_L2_error_evolution_stationary_contact_wave_piecewise(sol, equations, md, rd)
+    L2_error = zeros(length(sol.t))
+    local rq, wq = quad_nodes(rd.element_type, rd.N + 5)
+    local Vq = vandermonde(rd.element_type, rd.N, rq) / rd.VDM
+    local xq = Vq * md.x
+    wJq = wq.*Vq*md.J
+        for (i, t) in enumerate(sol.t)
+            error = Vq * parent(sol.u[i]) - stationary_contact_wave_piecewise.(xq, equations)
+            L2_error[i] = sqrt(sum(wJq .* norm.(error).^2))
+        end
+    return L2_error
+end
+
+#Compute the error at each saved time
+function compute_L2_error_evolution_stationary_contact_wave_piecewise_smooth(sol, equations, md, rd)
+    L2_error = zeros(length(sol.t))
+    local rq, wq = quad_nodes(rd.element_type, rd.N + 5)
+    local Vq = vandermonde(rd.element_type, rd.N, rq) / rd.VDM
+    local xq = Vq * md.x
+    wJq = wq.*Vq*md.J
+        for (i, t) in enumerate(sol.t)
+            error = Vq * parent(sol.u[i]) - stationary_contact_wave_piecewise_smooth.(xq, equations)
             L2_error[i] = sqrt(sum(wJq .* norm.(error).^2))
         end
     return L2_error
