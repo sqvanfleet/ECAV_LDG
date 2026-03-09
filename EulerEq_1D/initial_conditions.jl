@@ -1,4 +1,4 @@
-using Trixi
+
 
 function shu_osher(x, equations::CompressibleEulerEquations1D)
     if x < -4
@@ -57,7 +57,7 @@ end
 
 
 
-function initial_condition_density_wave(x, equations::CompressibleEulerEquations1D; 
+function my_initial_condition_density_wave(x, equations::CompressibleEulerEquations1D; 
                                         amplitude = 0.5, a = 10.0)
     rho = 1.0 + 0.5 * exp(-a * sin(pi * x)^2)
     # rho = 1.0 + amplitude * sin(20*pi*x)

@@ -62,7 +62,7 @@ function error_study()
                     adaptive = false, 
                     dt = 5e-4)
 
-        L2_error = compute_L2_error_evolution_stationary_contact_wave(sol, equations, md, rd)
+        L2_error = compute_L2_error_evolution_stationary_contact_wave_piecewise(sol, equations, md, rd)
 
         filename = "N$(N)_K$(K1D)_tspan$(tspan[2]).jld2"
         filepath = joinpath(folder, filename)

@@ -14,7 +14,7 @@ include("computing_quanities.jl")
 
 initial_condition_type = :stationary_contact_wave
 
-function error_study()
+function error_study_piecewise_smooth()
     
     AV_type = :LDG 
     DG_type = :modal 
@@ -40,7 +40,7 @@ function error_study()
         (VX,), EToV = uniform_mesh(rd.element_type, K1D)
         md = MeshData((VX,), EToV, rd; is_periodic=true)
         
-        u = rd.Pq * stationary_contact_wave_piecewise.(md.xq, equations)
+        u = rd.Pq * stationary_contact_wave_piecewise_smooth.(md.xq, equations)
 
         # Re-initialize logging containers for each N
         params = (; rd, md, equations, interface_flux = flux_hllc, 
@@ -62,7 +62,7 @@ function error_study()
                     adaptive = false, 
                     dt = 5e-4)
 
-        L2_error = compute_L2_error_evolution_stationary_contact_wave(sol, equations, md, rd)
+        L2_error = compute_L2_error_evolution_stationary_contact_wave_piecewise_smooth(sol, equations, md, rd)
 
         filename = "N$(N)_K$(K1D)_tspan$(tspan[2]).jld2"
         filepath = joinpath(folder, filename)
@@ -72,7 +72,7 @@ function error_study()
     end
 end
 
-error_study()
+error_study_piecewise_smooth()
 
 
 base_path = @__DIR__
@@ -95,7 +95,7 @@ p1 = plot(sol.t[2:end], L2_error[2:end],
         right_margin = margins[2],
         top_margin = margins[3],
         bottom_margin = margins[4],
-        ylims = (-14,2),
+        #ylims = (-14,2),
         xlabel = L"$t$", 
         #ylabel = L"$\log_{10}||u_h - u||_{L^2(D)}$", 
         label = "N = $(rd.N)" , linewidth = 3,

@@ -95,7 +95,7 @@ function rhs_shock_cap!(du_voa, u_voa, params, t)
     du_Euler_AV_norm = sqrt(sum(md.wJq .* norm.(rd.Vq * du).^2))
 
     if params.initial_condition_type == :density_wave
-        u_exact = initial_condition_density_wave.(md.xq .- 0.1*t, equations)
+        u_exact = my_initial_condition_density_wave.(md.xq .- 0.1*t, equations)
         error = rd.Vq * parent(u) - u_exact
         num = sqrt(sum(md.wJq .* norm.(error).^2))
         den = sqrt(sum(md.wJq .* norm.(u_exact).^2))
@@ -184,7 +184,7 @@ function rhs!(du_voa, u_voa, params, t)
     du_Euler_AV_norm = sqrt(sum(md.wJq .* norm.(rd.Vq * du).^2))
 
     if params.initial_condition_type == :density_wave
-        u_exact = initial_condition_density_wave.(md.xq .- 0.1*t, equations)
+        u_exact = my_initial_condition_density_wave.(md.xq .- 0.1*t, equations)
         error = rd.Vq * parent(u) - u_exact
         num = sqrt(sum(md.wJq .* norm.(error).^2))
         den = sqrt(sum(md.wJq .* norm.(u_exact).^2))
@@ -247,7 +247,7 @@ function rhs_DG_FEM!(du_voa, u_voa, params, t)
     @. du /= -md.J
 
     if params.initial_condition_type == :density_wave
-        u_exact = initial_condition_density_wave.(md.xq .- 0.1*t, equations)
+        u_exact = my_initial_condition_density_wave.(md.xq .- 0.1*t, equations)
         error = rd.Vq * parent(u) - u_exact
         num = sqrt(sum(md.wJq .* norm.(error).^2))
         den = sqrt(sum(md.wJq .* norm.(u_exact).^2))
