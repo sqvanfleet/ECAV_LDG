@@ -11,6 +11,7 @@ using LaTeXStrings
 initial_condition_type = :shu_osher
 
 include("initial_conditions.jl")
+include("rhs.jl")
 
 #Choose AV type
 # AV_type = :BR1
@@ -156,7 +157,7 @@ savefig(du_visc_norm_evolution_plot, joinpath(path_to_plots, "du_visc_norm_evolu
 
 epsilon_evolution_plot = plot(sol_LDG.prob.p.t,abs.(sol_LDG.prob.p.max_epsilon) .+ 1e-14,
     yscale = :log10,
-    ylim = (1e-3,1e-1),
+    ylim = (1e-7,1e1),
     xlabel = L"$t$", 
     #ylabel = L"$\log_{10}\left(\max_k{\epsilon}\right)$",
     size = common_size,
@@ -182,6 +183,7 @@ xp = rd.Vp * md.x
 density_plot = plot(vec(xp), vec(up), label = "$(sol_LDG.prob.p.AV_type) AV", 
             xlabel = L"$x$", 
             #ylabel=L"$\rho$", 
+            # ylims = (1e-7,1e0),
             size = common_size,
             left_margin = margins[1],
             right_margin = margins[2],
