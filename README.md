@@ -33,4 +33,4 @@ There are three directories in this repository, seven of them are aggregation-di
 
 ## Example 5.7 Shu-Osher problem Figure 7 and Figure 8
 1. run `shu_osher_modal.jl` to generate plots for Figure 7 and Figure 8a in the Shu_Osher_plots folder.
-2. run 'shu_osher_nodal.jl` to generate plots for Figure 8b in the Shu_Osher_plots folder.
+2. run `shu_osher_nodal.jl` to generate plots for Figure 8b in the Shu_Osher_plots folder.
