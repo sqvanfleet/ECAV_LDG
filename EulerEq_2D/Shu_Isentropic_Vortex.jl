@@ -1,7 +1,7 @@
 using StartUpDG
 using LinearAlgebra 
 using StaticArrays
-using OrdinaryDiffEq, RecursiveArrayTools
+using OrdinaryDiffEqTsit5, RecursiveArrayTools
 using JLD2
 using Trixi
 using Trixi.ForwardDiff
