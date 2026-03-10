@@ -1,4 +1,4 @@
-# On the choice of viscous discontinuous Galerkin discretization for entropy correction artificial viscosity methods
+# Reproducbility repository for "On the choice of viscous discontinuous Galerkin discretization for entropy correction artificial viscosity methods"
 This repository includes the Julia code for each numerical example given in Section 5 of 
 [this paper](https://arxiv.org/abs/2602.23210).  The goal is that any reader may reproduce the results shown for each example.  
 
