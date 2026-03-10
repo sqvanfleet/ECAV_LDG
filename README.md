@@ -32,9 +32,5 @@ There are three directories in this repository, seven of them are aggregation-di
 2. the LaTeX code for Table 2 is generated as output.
 
 ## Example 5.7 Shu-Osher problem Figure 7 and Figure 8
-1. Navigate to the `EulerEq_1D` folder
-2. open `1D Euler AV.jl` and uncomment line 306 and comment out lines 302 through 305 and comment out line 307
-3. on line 291 change `N = 3` and `K1D = 100` and run `EulerEq_1D`
-4. the plots in Figure 7 and Figure 8 (a) are in the `Shu_Osher_plots` folder
-5. in `1D Euler AV.jl` comment out line 285 and uncomment line 286
-6. the plot in Figure 8 (b) is in the `Shu_Osher_plots` folder
+1. run `shu_osher_modal.jl` to generate plots for Figure 7 and Figure 8a in the Shu_Osher_plots folder.
+2. run 'shu_osher_nodal.jl` to generate plots for Figure 8b in the Shu_Osher_plots folder.
