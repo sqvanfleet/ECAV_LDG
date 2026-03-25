@@ -1,5 +1,8 @@
 # ECAV_LDG
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19221859.svg)](https://doi.org/10.5281/zenodo.19221859)
+[![DOI](https://zenodo.org/badge/1171876898.svg)](https://doi.org/10.5281/zenodo.19221858)\
+
+
+
 
 # Reproducbility repository for "On the choice of viscous discontinuous Galerkin discretization for entropy correction artificial viscosity methods"
 This repository includes the Julia code for each numerical example given in Section 5 of 
