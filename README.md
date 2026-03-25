@@ -1,5 +1,5 @@
 # ECAV_LDG
-[![DOI](https://zenodo.org/badge/1171876898.svg)](https://doi.org/10.5281/zenodo.19221858)\
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19221859.svg)](https://doi.org/10.5281/zenodo.19221859)\
 
 
 
