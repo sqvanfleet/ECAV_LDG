@@ -10,11 +10,11 @@ function periodic_wrap(x, a, T)
 end
 
 function Shock_vortex_interaction(x,y,equations::CompressibleEulerEquations2D,gamma)
+        Ms = 1.1
         rho_L = 1.0
-        u_L = sqrt(gamma)
+        u_L = Ms * sqrt(gamma)
         v_L = 0.0
         p_L = 1.0
-        Ms = 1.1
 
         RH1 = (2.0 + (gamma - 1.0) * Ms^2)/ ((gamma +1.0)*Ms^2)
         RH2 = 1.0 + ((2.0*gamma)/(gamma + 1.0)) * (Ms^2 - 1.0)
@@ -41,24 +41,17 @@ function Shock_vortex_interaction(x,y,equations::CompressibleEulerEquations2D,ga
         T_L = p_L/rho_L
         T_vor = delta_T + T_L
 
+        temp_ratio = T_vor / T_L
         if x < 0.5
-                # rho = rho_L
-                # u = u_L
-                # v = v_L
-                # p = p_L
-                rho = rho_L*(T_vor/T_L)^(1.0/(gamma - 1.0))
+                rho = rho_L * temp_ratio^(1.0 / (gamma - 1.0))
                 u = u_L + delta_u
                 v = v_L + delta_v
-                p = p_L*(T_vor/T_L)^(1.0/(gamma - 1.0))
-        else x > 0.5
-                # rho = rho_R
-                # u = u_R
-                # v = v_R
-                # p = p_R
-                rho = rho_R*(T_vor/T_L)^(1.0/(gamma - 1.0))
+                p = p_L * temp_ratio^(gamma / (gamma - 1.0))
+        else
+                rho = rho_R * temp_ratio^(1.0 / (gamma - 1.0))
                 u = u_R + delta_u
                 v = v_R + delta_v
-                p = p_R*(T_vor/T_L)^(1.0/(gamma - 1.0))
+                p = p_R * temp_ratio^(gamma / (gamma - 1.0))
         end
         return prim2cons(SVector(rho, u, v, p),equations)
 end
