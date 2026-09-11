@@ -1,6 +1,5 @@
 
 include("initial_conditions.jl")
-include("computing_quanities.jl")
 
 psi(u, normal, ::CompressibleEulerEquations1D) = u[2] * normal
 dudv(v, equations) = ForwardDiff.jacobian(v -> entropy2cons(v, equations), v)

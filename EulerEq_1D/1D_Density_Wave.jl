@@ -42,7 +42,7 @@ for K1D in [8, 16, 24]
     println("STARTING SIMULATION: K1D = $K1D")
     println("="^60)
 
-    # DISAMBIGUATION: Use 'local' to prevent global/local scope warnings
+    
     local VX, EToV, rd, md, u_init, sol, sol_sc, sol_DG_FEM
     local common_size, rho_sc, rho_ecav, x_refined, rho_exact, x_plot
 
@@ -78,10 +78,27 @@ for K1D in [8, 16, 24]
         yscale = :log10, ylims = (1e-11,1e0), size = common_size,
         left_margin=m_left, bottom_margin=m_bottom,
         yticks = [1e-10, 1e-8, 1e-6, 1e-4, 1e-2, 1e0],
-        xlabel = L"$t$", linewidth = 3, tickfontsize = 16, legendfontsize = 12, xguidefontsize = 20,
+        xlabel = L"$t$", 
+        ylabel = L"\epsilon",
+        linewidth = 3, tickfontsize = 16, legendfontsize = 12, 
+        yguidefontsize = 24, xguidefontsize = 24,
         legend=:topright, label = L"$\max_k{\epsilon_k}$ ECAV")
-    plot!(p_eps, sol_sc.prob.p.t, sol_sc.prob.p.max_epsilon .+ 1e-14, label = L"$\max_k{\epsilon_k}$ SC", linewidth = 3)
+    plot!(p_eps, sol_sc.prob.p.t, sol_sc.prob.p.max_epsilon .+ 1e-14,
+        label = L"$\max_k{\epsilon_k}$ SC", linewidth = 3)
     savefig(p_eps, joinpath(path_to_plots, "max_epsilon_$(DG_type)_K_$(K1D).png"))
+
+    # L^2 error evolution plot
+    p_L2 = plot(sol.prob.p.t, sol.prob.p.L2_error,
+        size = common_size, left_margin = m_left,
+        bottom_margin = m_bottom,
+        xlabel = L"$t$",
+        ylabel = L"\|u - u_h\|_{L^2}",
+        linewidth = 3, tickfontsize = 16, legendfontsize = 12,
+        yguidefontsize = 24, xguidefontsize = 24,
+        legend=:right, label = "ECAV")
+    plot!(p_L2, sol_sc.prob.p.t, sol_sc.prob.p.L2_error,
+        label = L"SC", linewidth = 3)
+    savefig(p_L2, joinpath(path_to_plots, "error_$(DG_type)_K_$(K1D).png"))
 
     # Plot Final Density Profiles
     rho_sc = rd.Vp * getindex.(parent(sol_sc.u[end]), 1)
@@ -92,7 +109,9 @@ for K1D in [8, 16, 24]
 
     p_dens = plot(x_plot, vec(rho_ecav), linewidth = 3, color = :blue, size = common_size,
                 ylims = (0.975, 1.525),
-                 left_margin=m_left, bottom_margin=m_bottom, tickfontsize = 16, xlabel = L"$x$", legend = :topright, label="")
+                left_margin=m_left, bottom_margin=m_bottom,
+                tickfontsize = 16, xlabel = L"$x$", legend = :topright, label="",
+                ylabel = L"\rho", xguidefontsize = 24, yguidefontsize = 24)
     scatter!(p_dens, x_plot, vec(rho_ecav), marker=:circle, ms=4, color=:blue, label="", primary=false)
     plot!(p_dens, x_plot, vec(rho_sc), linewidth=3, color=:red, label="")
     scatter!(p_dens, x_plot[1:5:end], vec(rho_sc)[1:5:end], marker=:rect, ms=4, color=:red, label="", primary=false)

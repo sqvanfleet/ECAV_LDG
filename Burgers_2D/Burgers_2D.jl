@@ -11,11 +11,11 @@ psi1(u) = u^3 / 6
 psi2(u) = u^3 / 6
 
 function rhs!(du, u, params, t)
-    (; rd, md, AV_type ) = params
+    (; rd, md, AV_type, flux_type) = params
     invMQTr = -rd.M \ (rd.Dr' * rd.M * rd.Pq)
     invMQTs = -rd.M \ (rd.Ds' * rd.M * rd.Pq)
 
-    push!(params.t, t)
+    # push!(params.t, t)
 
     uq = rd.Vq * u
     uM = rd.Vf * u
@@ -71,17 +71,25 @@ function rhs!(du, u, params, t)
           + md.ryJ .* (invMQTr * sigma_y) + md.syJ .* (invMQTs * sigma_y)
           + rd.LIFT * interface_flux)
 
-    push!(params.max_epsilon, maximum(epsilon))
+    #maximum epsilon
+    # push!(params.max_epsilon, maximum(epsilon))
     
     @. du /= -md.J
 
     # @show extrema(epsilon)
 
-    dSdt = sum(u .* (rd.M * (md.J .* du)))
-    if dSdt > 100 * eps()
-        @show dSdt
-    end
-    push!(params.dSdt, dSdt)
+    #Total Entropy
+    # S = 0.5 * sum(u .* (rd.M * (md.J .* u)))
+    # push!(params.S, S)
+
+    #Change in Entropy
+    # dSdt = sum(u .* (rd.M * (md.J .* du)))
+    # if dSdt > 100 * eps()
+    #     @show dSdt
+    # end
+    # push!(params.dSdt, dSdt)
+
+    return maximum(epsilon)
 end
 
 N = 3
@@ -103,15 +111,52 @@ for current_AV in av_cases
 
         u = rd.Pq * exp.(-25*(md.xq.^2 + md.yq.^2)) 
 
-        params = (; rd, md, AV_type = current_AV, DG_type, 
-                   t = Float64[], max_epsilon = Float64[], dSdt = Float64[])
+        params = (; rd, md, AV_type = current_AV, DG_type, flux_type, 
+                   t = Float64[],
+                   dt = Float64[], 
+                   max_epsilon = Float64[], 
+                   dSdt = Float64[], 
+                   S = Float64[])
+
+        logging_callback = DiscreteCallback(
+            (u, t, integrator) -> true, 
+            integrator -> begin
+                p = integrator.p
+                u = integrator.u
+                t = integrator.t
+                dt = integrator.dt
+
+                # Evaluate rhs! and capture max_epsilon in a SINGLE call
+                du = similar(u)
+                max_eps = rhs!(du, u, p, t)
+                
+                # Push time and time step size
+                push!(p.t, t)
+                push!(p.dt, dt)
+            
+                # Entropy 
+                S = 0.5 * sum(u .* (p.rd.M * (p.md.J .* u)))
+                push!(p.S, S)
+
+                # Change in Entropy
+                dSdt = sum(u .* (p.rd.M * (p.md.J .* du)))
+                if dSdt > 100 * eps()
+                    @show dSdt
+                end
+                push!(p.dSdt, dSdt)
+
+                # Push the max_eps captured directly from rhs!
+                push!(p.max_epsilon, max_eps)
+            end
+        )
         
         tspan = (0.0, 0.77)
         ode = ODEProblem(rhs!, u, tspan, params)
 
         sol = solve(ode, SSPRK43(); abstol = 1e-6, reltol = 1e-4, 
                     saveat = LinRange(tspan..., 500),
-                    callback = AliveCallback(alive_interval = 100))
+                    callback = CallbackSet(AliveCallback(alive_interval = 100),
+                    logging_callback))
 
         file_name = "N$(N)_K$(K1D)_$(current_AV)_$(DG_type)_$(flux_type).jld2"
         save_path = joinpath(@__DIR__, "Data", file_name)
