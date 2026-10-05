@@ -1,0 +1,44 @@
+using StartUpDG
+using JLD2
+
+subdirectory = "Data"
+filename = "Central_flux_LDG"
+
+LDG_sol = load(joinpath(subdirectory,filename), "sol")
+
+size(LDG_sol)
+
+
+epsilon_evolution = zeros(K1D,sol_size[3])
+delta = zeros(K1D)
+num = zeros(K1D)
+den = zeros(K1D)
+
+
+for (j,u) in enumerate(sol.u)
+    invMQTr = -rd.M \ (rd.Dr' * rd.M)
+
+    #BR1
+    #beta = 0
+    #LDG
+    beta = @. sign(md.nxJ)
+    
+    uM = rd.Vf * u
+    uP = uM[md.mapP]
+    #LDG
+    sigma = (md.rxJ .* (invMQTr * u) + rd.LIFT * (@. 0.5 * (uP + uM) * md.nxJ - 0.5 * beta * (uP - uM) * md.nxJ)) ./ md.J
+    
+    
+    dvdxJ = md.rxJ .* (rd.Dr * u)
+    term1 = @. -rd.wq * f(u) * dvdxJ
+    term2 = @. rd.wf * psi(uM) * md.nxJ
+    for i in 1:K1D
+        delta[i] = sum(term1[:,i]) + sum(term2[:,i])
+        # Comput the numerator of eq (22)
+        num[i] = -min(0, delta[i])
+        # Compute the denomenator of eq (22)
+        den[i] = sum(rd.wq .* sigma[:,i].^2 .* md.J[:,i])
+        epsilon_evolution[i,j] = num[i] * den[i] / (1e-14 + den[i]^2)
+    end
+
+end

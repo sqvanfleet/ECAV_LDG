@@ -1,6 +1,5 @@
 
 include("initial_conditions.jl")
-include("computing_quanities.jl")
 
 psi(u, normal, ::CompressibleEulerEquations1D) = u[2] * normal
 dudv(v, equations) = ForwardDiff.jacobian(v -> entropy2cons(v, equations), v)
@@ -274,5 +273,14 @@ function solve_ode(u, tspan, params, abstol = 1e-6, reltol = 1e-4, number_of_sav
     sol = solve(ode, SSPRK43(); abstol, reltol, 
                 saveat=LinRange(tspan..., number_of_saves), 
                 callback=AliveCallback(alive_interval=100))
+    return sol
+end
+
+function solve_ode_SC(u, tspan, params, abstol = 1e-6, reltol = 1e-4, number_of_saves = 1000)
+    # Solve the ODE problem with shock capturing
+    ode = ODEProblem(rhs_shock_cap!, VectorOfArray(u), tspan, params)
+    sol = solve(ode, SSPRK43(); abstol, reltol,
+                saveat=LinRange(tspan..., number_of_saves),
+                callback=AliveCallback(alive_interval = 100))
     return sol
 end

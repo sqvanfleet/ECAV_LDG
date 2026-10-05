@@ -1,6 +1,7 @@
 using StartUpDG
 using LinearAlgebra
 using OrdinaryDiffEq, RecursiveArrayTools
+using OrdinaryDiffEqSSPRK: SSPRK43
 using JLD2
 using Trixi
 using Trixi.ForwardDiff
@@ -10,7 +11,6 @@ using LaTeXStrings
 
 include("initial_conditions.jl")
 include("rhs.jl")
-include("computing_quanities.jl")
 
 initial_condition_type = :stationary_contact_wave
 
@@ -72,6 +72,20 @@ function error_study()
     end
 end
 
+#Compute the error at each saved time
+function compute_L2_error_evolution_stationary_contact_wave_piecewise(sol, equations, md, rd)
+    L2_error = zeros(length(sol.t))
+    local rq, wq = quad_nodes(rd.element_type, rd.N + 5)
+    local Vq = vandermonde(rd.element_type, rd.N, rq) / rd.VDM
+    local xq = Vq * md.x
+    wJq = wq.*Vq*md.J
+        for (i, t) in enumerate(sol.t)
+            error = Vq * parent(sol.u[i]) - stationary_contact_wave_piecewise.(xq, equations)
+            L2_error[i] = sqrt(sum(wJq .* norm.(error).^2))
+        end
+    return L2_error
+end
+
 error_study()
 
 
@@ -97,11 +111,14 @@ p1 = plot(sol.t[2:end], L2_error[2:end],
         bottom_margin = margins[4],
         #ylims = (-14,2),
         xlabel = L"$t$", 
-        #ylabel = L"$\log_{10}||u_h - u||_{L^2(D)}$", 
+        ylabel = L"\|u - u_h\|_{L^2}", 
         label = "N = $(rd.N)" , linewidth = 3,
         tickfontsize = 20,
         legendfontsize = 16,
-        xguidefontsize = 24,)
+        xguidefontsize = 24,
+        yguidefontsize = 24)
+
+display(p1)
 
 
 for i in [4,6,8]
