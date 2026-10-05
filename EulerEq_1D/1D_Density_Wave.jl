@@ -80,7 +80,7 @@ for K1D in [8, 16, 24]
         yticks = [1e-10, 1e-8, 1e-6, 1e-4, 1e-2, 1e0],
         xlabel = L"$t$", 
         ylabel = L"\epsilon",
-        linewidth = 3, tickfontsize = 16, legendfontsize = 12, 
+        linewidth = 3, tickfontsize = 16, legendfontsize = 16, 
         yguidefontsize = 24, xguidefontsize = 24,
         legend=:topright, label = L"$\max_k{\epsilon_k}$ ECAV")
     plot!(p_eps, sol_sc.prob.p.t, sol_sc.prob.p.max_epsilon .+ 1e-14,
@@ -93,11 +93,11 @@ for K1D in [8, 16, 24]
         bottom_margin = m_bottom,
         xlabel = L"$t$",
         ylabel = L"\|u - u_h\|_{L^2}",
-        linewidth = 3, tickfontsize = 16, legendfontsize = 12,
+        linewidth = 3, tickfontsize = 16, legendfontsize = 16,
         yguidefontsize = 24, xguidefontsize = 24,
         legend=:right, label = "ECAV")
     plot!(p_L2, sol_sc.prob.p.t, sol_sc.prob.p.L2_error,
-        label = L"SC", linewidth = 3)
+        label = "SC", linewidth = 3)
     savefig(p_L2, joinpath(path_to_plots, "error_$(DG_type)_K_$(K1D).png"))
 
     # Plot Final Density Profiles
@@ -111,7 +111,7 @@ for K1D in [8, 16, 24]
                 ylims = (0.975, 1.525),
                 left_margin=m_left, bottom_margin=m_bottom,
                 tickfontsize = 16, xlabel = L"$x$", legend = :topright, label="",
-                ylabel = L"\rho", xguidefontsize = 24, yguidefontsize = 24)
+                ylabel = L"\rho", xguidefontsize = 24, yguidefontsize = 24, legendfontsize = 16)
     scatter!(p_dens, x_plot, vec(rho_ecav), marker=:circle, ms=4, color=:blue, label="", primary=false)
     plot!(p_dens, x_plot, vec(rho_sc), linewidth=3, color=:red, label="")
     scatter!(p_dens, x_plot[1:5:end], vec(rho_sc)[1:5:end], marker=:rect, ms=4, color=:red, label="", primary=false)

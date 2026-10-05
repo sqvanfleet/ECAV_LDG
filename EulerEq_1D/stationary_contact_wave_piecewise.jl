@@ -118,6 +118,8 @@ p1 = plot(sol.t[2:end], L2_error[2:end],
         xguidefontsize = 24,
         yguidefontsize = 24)
 
+display(p1)
+
 
 for i in [4,6,8]
     local loop_file = joinpath(base_path, "Contact_wave_data", "N$(i)_K80_tspan4.0.jld2")

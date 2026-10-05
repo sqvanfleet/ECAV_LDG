@@ -1,6 +1,8 @@
 using StartUpDG
 using LinearAlgebra
-using OrdinaryDiffEq, RecursiveArrayTools
+using OrdinaryDiffEq
+using OrdinaryDiffEqSSPRK: SSPRK43 
+using RecursiveArrayTools
 using JLD2
 using Trixi
 using Trixi.ForwardDiff
@@ -58,6 +60,50 @@ filepath = joinpath(folder, filename)
 
 sol_LDG = solve_ode(u, tspan, params)
 
+#Solve the Shu_Osher_problem using shock capturing
+
+AV_type = :LDG
+t = Float64[]
+max_epsilon = Float64[]
+du_visc_norm = Float64[]
+sigma_norm = Float64[]
+du_Euler_norm = Float64[]
+du_Euler_AV_norm = Float64[]
+params = (; rd, md, equations, interface_flux = flux_hllc, 
+    initial_condition_type, AV_type, t, max_epsilon, DG_type,
+    du_visc_norm, sigma_norm, du_Euler_norm, du_Euler_AV_norm)
+filename = "N$(N)_K$(K1D)_tspan$(tspan[2])_$(DG_type)_$(AV_type)_SC .jld2"
+
+filepath = joinpath(folder, filename)
+
+sol_LDG_SC = solve_ode_SC(u, tspan, params)
+
+
+#Compare the density of LDG ECAV and LDG SC
+rho_LDG = rd.Vp * getindex.(parent(sol_LDG.u[end]), 1)
+x_plot = vec(rd.Vp * md.x)
+rho_LDG_SC = rd.Vp * getindex.(parent(sol_LDG_SC.u[end]),1)
+
+p_sol = plot(x_plot, vec(rho_LDG),
+    xlabel = L"$t$", 
+    ylabel = L"$u$", 
+    label = "LDG_ECAV", 
+    linewidth = 3, tickfontsize = 20,
+    legendfontsize = 16,
+    xguidefontsize = 24,
+    yguidefontsize = 18,
+    size = common_size,
+    left_margin = margins[1],
+    right_margin = margins[2],
+    top_margin = margins[3],
+    bottom_margin = margins[4],legend = :bottomleft)
+
+plot!(p_sol,x_plot, vec(rho_LDG_SC),label = "LDG_SC", linewidth = 3)
+
+path_to_plots = joinpath(@__DIR__, "Shu_Osher_plots")
+mkpath(path_to_plots)
+savefig(p_sol, joinpath(path_to_plots, "density_$(sol_LDG.prob.p.DG_type)_SC_$(sol_LDG.prob.p.AV_type)_compare.png"))
+
 # Compute the ||dv||^2/||Pdv||^2
 function compute_dvPdv(sol, equations,md, rd)
     dvPdv = zeros(length(sol.t))
@@ -73,11 +119,13 @@ function compute_dvPdv(sol, equations,md, rd)
     return dvPdv, maxdvPdv_ind
 end
 
+#LDG ECAV
 dvPdv, maxdvPdv_ind = compute_dvPdv(sol_LDG, equations, md, rd)
 
 common_size = (800, 600)
 margins = (5Plots.mm, 5Plots.mm, 5Plots.mm, 5Plots.mm) 
 
+#plot of dvPdv
 p = plot(sol_LDG.t, dvPdv, 
     xlabel = L"$t$", 
     ylabel = L"$\max_k{||\delta v||^2||\Pi_N \delta v||^2}$", 
@@ -97,6 +145,23 @@ mkpath(path_to_plots)
 savefig(p, joinpath(path_to_plots, "dvPdv_$(sol_LDG.prob.p.DG_type).png"))
 # display(p)
 
+#Plot of solution
+# p_sol = plot(sol_LDG.t, sol_LDG.u,
+#     xlabel = L"$t$", 
+#     ylabel = L"$u$", 
+#     label = false, 
+#     linewidth = 3, tickfontsize = 20,
+#     legendfontsize = 16,
+#     xguidefontsize = 24,
+#     yguidefontsize = 18,
+#     size = common_size,
+#     left_margin = margins[1],
+#     right_margin = margins[2],
+#     top_margin = margins[3],
+#     bottom_margin = margins[4],legend = :bottomleft)
+
+# display(p_sol)
+
 AV_type = :BR1
 t = Float64[]
 max_epsilon = Float64[] 
@@ -112,6 +177,9 @@ filename = "N$(N)_K$(K1D)_tspan$(tspan[2])_$(DG_type)_$(AV_type).jld2"
 filepath = joinpath(folder, filename)
 
 sol_BR1 = solve_ode(u, tspan, params)
+
+
+
 
 
 

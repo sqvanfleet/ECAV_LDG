@@ -1,6 +1,8 @@
 using StartUpDG
 using LinearAlgebra
-using OrdinaryDiffEq, RecursiveArrayTools
+using OrdinaryDiffEq
+using OrdinaryDiffEqSSPRK: SSPRK43 
+using RecursiveArrayTools
 using JLD2
 using Trixi
 using Trixi.ForwardDiff
@@ -58,6 +60,25 @@ filepath = joinpath(folder, filename)
 
 sol_LDG = solve_ode(u, tspan, params)
 
+
+#Solve the Shu_Osher_problem using shock capturing
+
+AV_type = :LDG
+t = Float64[]
+max_epsilon = Float64[]
+du_visc_norm = Float64[]
+sigma_norm = Float64[]
+du_Euler_norm = Float64[]
+du_Euler_AV_norm = Float64[]
+params = (; rd, md, equations, interface_flux = flux_hllc, 
+    initial_condition_type, AV_type, t, max_epsilon, DG_type,
+    du_visc_norm, sigma_norm, du_Euler_norm, du_Euler_AV_norm)
+filename = "N$(N)_K$(K1D)_tspan$(tspan[2])_$(DG_type)_$(AV_type)_SC.jld2"
+
+filepath = joinpath(folder, filename)
+
+sol_LDG_SC = solve_ode_SC(u, tspan, params)
+
 # Compute the ||dv||^2/||Pdv||^2
 function compute_dvPdv(sol, equations,md, rd)
     dvPdv = zeros(length(sol.t))
@@ -97,6 +118,33 @@ mkpath(path_to_plots)
 savefig(p, joinpath(path_to_plots, "dvPdv_$(sol_LDG.prob.p.DG_type).png"))
 # display(p)
 
+#Plot of solution
+
+rho_LDG = rd.Vp * getindex.(parent(sol_LDG.u[end]), 1)
+x_plot = vec(rd.Vp * md.x)
+rho_LDG_SC = rd.Vp * getindex.(parent(sol_LDG_SC.u[end]),1)
+
+p_sol = plot(x_plot, vec(rho_LDG),
+    xlabel = L"$x$", 
+    ylabel = L"$u$", 
+    label = "LDG ECAV", 
+    linewidth = 3, tickfontsize = 20,
+    legendfontsize = 16,
+    xguidefontsize = 24,
+    yguidefontsize = 24,
+    size = common_size,
+    left_margin = margins[1],
+    right_margin = margins[2],
+    top_margin = margins[3],
+    bottom_margin = margins[4],legend = :bottomleft)
+
+plot!(p_sol,x_plot, vec(rho_LDG_SC),label = "SC", linewidth = 3)
+
+path_to_plots = joinpath(@__DIR__, "Shu_Osher_plots")
+mkpath(path_to_plots)
+savefig(p_sol, joinpath(path_to_plots, "density_$(sol_LDG.prob.p.DG_type)_SC_$(sol_LDG.prob.p.AV_type)_compare.png"))
+
+#Solve the Shu Osher problem with BR1 ECAV
 AV_type = :BR1
 t = Float64[]
 max_epsilon = Float64[] 
@@ -113,6 +161,48 @@ filepath = joinpath(folder, filename)
 
 sol_BR1 = solve_ode(u, tspan, params)
 
+#Solve the Shu_Osher_problem using shock capturing BR1
+
+AV_type = :BR1
+t = Float64[]
+max_epsilon = Float64[]
+du_visc_norm = Float64[]
+sigma_norm = Float64[]
+du_Euler_norm = Float64[]
+du_Euler_AV_norm = Float64[]
+params = (; rd, md, equations, interface_flux = flux_hllc, 
+    initial_condition_type, AV_type, t, max_epsilon, DG_type,
+    du_visc_norm, sigma_norm, du_Euler_norm, du_Euler_AV_norm)
+filename = "N$(N)_K$(K1D)_tspan$(tspan[2])_$(DG_type)_$(AV_type)_SC.jld2"
+
+filepath = joinpath(folder, filename)
+
+sol_BR1_SC = solve_ode_SC(u, tspan, params)
+
+
+rho_BR1 = rd.Vp * getindex.(parent(sol_BR1.u[end]), 1)
+x_plot = vec(rd.Vp * md.x)
+rho_BR1_SC = rd.Vp * getindex.(parent(sol_BR1_SC.u[end]),1)
+
+p_sol = plot(x_plot, vec(rho_BR1),
+    xlabel = L"$x$", 
+    ylabel = L"$u$", 
+    label = "BR1 ECAV", 
+    linewidth = 3, tickfontsize = 20,
+    legendfontsize = 16,
+    xguidefontsize = 24,
+    yguidefontsize = 24,
+    size = common_size,
+    left_margin = margins[1],
+    right_margin = margins[2],
+    top_margin = margins[3],
+    bottom_margin = margins[4],legend = :bottomleft)
+
+plot!(p_sol,x_plot, vec(rho_BR1_SC),label = "SC", linewidth = 3)
+
+path_to_plots = joinpath(@__DIR__, "Shu_Osher_plots")
+mkpath(path_to_plots)
+savefig(p_sol, joinpath(path_to_plots, "density_$(sol_BR1.prob.p.DG_type)_SC_$(sol_BR1.prob.p.AV_type)_compare.png"))
 
 
 du_LDG_compare = plot(sol_LDG.prob.p.t, sol_LDG.prob.p.du_Euler_AV_norm,
@@ -191,6 +281,52 @@ plot!(epsilon_evolution_plot, sol_BR1.prob.p.t, abs.(sol_BR1.prob.p.max_epsilon)
     label = "$(sol_BR1.prob.p.AV_type) $(sol_BR1.stats.naccept) time steps")
 
 savefig(epsilon_evolution_plot, joinpath(path_to_plots, "epsilon_evolution_$(DG_type).png"))
+
+epsilon_evolution_plot = plot(sol_LDG.prob.p.t,abs.(sol_LDG.prob.p.max_epsilon) .+ 1e-14,
+    yscale = :log10,
+    ylim = (1e-3,1e-1),
+    xlabel = L"$t$", 
+    ylabel = L"$\epsilon$",
+    size = common_size,
+    left_margin = margins[1],
+    right_margin = margins[2],
+    top_margin = margins[3],
+    bottom_margin = margins[4],
+    label = "ECAV $(sol_LDG.prob.p.AV_type) $(sol_LDG.stats.naccept) time steps" ,
+    linewidth = 3, tickfontsize = 20,
+    legendfontsize = 16,
+    xguidefontsize = 24,
+    yguidefontsize = 24)
+
+plot!(epsilon_evolution_plot, sol_LDG_SC.prob.p.t, abs.(sol_LDG_SC.prob.p.max_epsilon) .+ 1e-14,
+    linewidth = 3,
+    yscale = :log10,
+    label = "SC $(sol_LDG_SC.stats.naccept) time steps")
+
+savefig(epsilon_evolution_plot, joinpath(path_to_plots, "epsilon_evolution_$(sol_LDG_SC.prob.p.DG_type)_SC_$(sol_LDG_SC.prob.p.AV_type).png"))
+
+epsilon_evolution_plot = plot(sol_BR1.prob.p.t,abs.(sol_BR1.prob.p.max_epsilon) .+ 1e-14,
+    yscale = :log10,
+    ylim = (1e-3,1e-1),
+    xlabel = L"$t$", 
+    ylabel = L"$\epsilon$",
+    size = common_size,
+    left_margin = margins[1],
+    right_margin = margins[2],
+    top_margin = margins[3],
+    bottom_margin = margins[4],
+    label = "ECAV $(sol_BR1.prob.p.AV_type) $(sol_BR1.stats.naccept) time steps" ,
+    linewidth = 3, tickfontsize = 20,
+    legendfontsize = 16,
+    xguidefontsize = 24,
+    yguidefontsize = 24)
+
+plot!(epsilon_evolution_plot, sol_BR1_SC.prob.p.t, abs.(sol_BR1_SC.prob.p.max_epsilon) .+ 1e-14,
+    linewidth = 3,
+    yscale = :log10,
+    label = "SC $(sol_BR1_SC.stats.naccept) time steps")
+
+savefig(epsilon_evolution_plot, joinpath(path_to_plots, "epsilon_evolution_$(sol_BR1_SC.prob.p.DG_type)_SC_$(sol_BR1_SC.prob.p.AV_type).png"))
 
 up = rd.Vp * getindex.(parent(sol_LDG.u[end]), 1)
 xp = rd.Vp * md.x
