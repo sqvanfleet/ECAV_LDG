@@ -33,46 +33,50 @@ function rhs!(du_voa, u_voa, params, t)
         uM = entropy2cons.(rd.Vf * v, equations)
         uP = uM[md.mapP]
 
-        if all(md.is_periodic .== (true,false)) 
+        if all(md.is_periodic .== (false,false)) 
 
+                # --- Boundary Conditions Setup ---
                 tol = 100 * eps()
-                top_bottom_boundary = findall(@. abs(md.yf[md.mapB] - 1.0) < tol || abs(md.yf[md.mapB]) < tol)
-                # right_boundary = findall(@. abs(md.xf[md.mapB] - 2.0) < tol)
-                # left_boundary = findall(@. abs(md.xf[md.mapB]) < tol)
-                # left_right_boundary = findall(@. abs(md.xf[md.mapB] - 2.0) < tol || abs(md.xf[md.mapB]) < tol)
+                
+                # Identify boundary face indices based on physical coordinates
+                xb = md.xf[md.mapB]
+                yb = md.yf[md.mapB]
 
+                top_bottom_boundary = findall(@. abs(yb - 1.0) < tol || abs(yb) < tol)
+                left_boundary       = findall(@. abs(xb) < tol)
+                # right_boundary      = findall(@. abs(xb - 2.0) < tol)
 
-                # impose wall BC
-                wall_indices = top_bottom_boundary
-                for i in eachindex(wall_indices)
-                        rho, v1, v2, p = cons2prim(uM[md.mapB[i]], equations)
-                        nx, ny = md.nx[md.mapB[i]], md.ny[md.mapB[i]] 
+                # 1. Top and Bottom Reflective Slip-Wall BCs
+                for idx in top_bottom_boundary
+                        b_node = md.mapB[idx]
+                        rho, v1, v2, p = cons2prim(uM[b_node], equations)
+                        nx, ny = md.nx[b_node], md.ny[b_node]
+                        
+                        # Normal velocity component: v_n = v1*nx + v2*ny
                         v_normal = v1 * nx + v2 * ny
-                        uP[md.mapB[i]] = prim2cons(SVector(rho, v1 , v2 - 2*v_normal*ny, p), equations)
+                        
+                        # Reflect normal velocity component
+                        v1_reflect = v1 - 2 * v_normal * nx
+                        v2_reflect = v2 - 2 * v_normal * ny
+                        
+                        uP[b_node] = prim2cons(SVector(rho, v1_reflect, v2_reflect, p), equations)
                 end
 
-                # wall_indices_lr = left_right_boundary
-                # for i in eachindex(wall_indices_lr)
-                #         rho, v1, v2, p = cons2prim(uM[md.mapB[i]], equations)
-                #         nx, ny = md.nx[md.mapB[i]], md.ny[md.mapB[i]] 
-                #         v_normal = v1 * nx + v2 * ny
-                #         uP[md.mapB[i]] = prim2cons(SVector(rho, v1 - 2*v_normal*nx, v2, p), equations)
+                # 2. Inflow BC (Left Boundary, x = 0)
+                # Prescribe exact incoming left-state/vortex flow
+                for idx in left_boundary
+                        b_node = md.mapB[idx]
+                        uP[b_node] = Shock_vortex_interaction(md.xf[b_node], md.yf[b_node], equations, gamma)
+                end
+
+                # # 3. Outflow BC (Right Boundary, x = 2)
+                # # Fix the unperturbed downstream post-shock state
+                # for idx in right_boundary
+                #         b_node = md.mapB[idx]
+                #         uP[b_node] = Shock_vortex_interaction(md.xf[b_node], md.yf[b_node], equations, gamma)
                 # end
 
-                # # impose free-stream BCs on the left boundary
-                # free_stream = left_boundary
-                # for i in eachindex(free_stream)
-                #         uP[md.mapB[i]] = Shock_vortex_interaction(md.xf[md.mapB[i]], md.yf[md.mapB[i]], equations, gamma)
-                # end
-
-                # # impose subsonic outflow BCs on the right boundary
-                # subsonic_outflow = right_boundary
-                # for i in eachindex(subsonic_outflow)
-                #         rho_init, v1_init, v2_init, p_init = 
-                #                 cons2prim(Shock_vortex_interaction(md.xf[md.mapB[i]], md.yf[md.mapB[i]], equations, gamma),equations) 
-                #         rho, v1, v2, p = cons2prim(uM[md.mapB[i]], equations)
-                #         uP[md.mapB[i]] = prim2cons(SVector(rho, v1, v2, p_init), equations)
-                # end                
+             
                         
         end
 

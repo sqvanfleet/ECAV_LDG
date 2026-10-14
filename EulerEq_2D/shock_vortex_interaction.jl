@@ -12,6 +12,7 @@ using Plots
 include("initial_conditions.jl")
 include("rhs.jl")
 
+
 psi_1(u, normal, ::CompressibleEulerEquations2D) = u[2] * normal
 psi_2(u, normal, ::CompressibleEulerEquations2D) = u[3] * normal
 
@@ -43,7 +44,7 @@ end
 (VX, VY), EToV = uniform_mesh(rd.element_type, 2*K1D, K1D)
 VX = VX .+ 1.0
 VY = 0.5 * (VY .+ 1.0)
-md = MeshData((VX, VY), EToV, rd; is_periodic = (true, false))
+md = MeshData((VX, VY), EToV, rd; is_periodic = (false, false))
 
 u_init = rd.Pq * Shock_vortex_interaction.(md.xq, md.yq, equations, gamma)
 
